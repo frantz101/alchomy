@@ -21,7 +21,8 @@ export const recipeManager = ( () => {
             instructions: "Pre-heat oven to 350 degrees.;Grease and flour three 6' X 1 1/2' round cake pans.;Mix together flour, cocoa powder, baking powder and baking soda. ;...In a large bowl, beat butter, eggs and vanilla.;Gradually add sugar.;Beat on medium to high speed for about 3-4 minutes until well mixed.",
             rating: 3,
             titleText: 'TITLE',
-            source: 'https://www.sprinklesandsprouts.com/wp-content/uploads/2016/09/toffee-apple-martini-cocktail.jpg'
+            source: 'https://www.sprinklesandsprouts.com/wp-content/uploads/2016/09/toffee-apple-martini-cocktail.jpg',
+            author: 'Bill101'
         },
         {
             id: 2,
@@ -29,7 +30,8 @@ export const recipeManager = ( () => {
             instructions: "Pre-heat oven to 350 degrees.;Grease and flour three 6' X 1 1/2' round cake pans.;Mix together flour, cocoa powder, baking powder and baking soda. ;...In a large bowl, beat butter, eggs and vanilla.;Gradually add sugar.;Beat on medium to high speed for about 3-4 minutes until well mixed.",
             rating: 3,
             titleText: 'TITLE',
-            source: 'https://www.sprinklesandsprouts.com/wp-content/uploads/2016/09/toffee-apple-martini-cocktail.jpg'
+            source: 'https://www.sprinklesandsprouts.com/wp-content/uploads/2016/09/toffee-apple-martini-cocktail.jpg',
+            author: 'Bill101',
         },
         {
             id: 3,
@@ -37,7 +39,8 @@ export const recipeManager = ( () => {
             instructions: "Pre-heat oven to 350 degrees.;Grease and flour three 6' X 1 1/2' round cake pans.;Mix together flour, cocoa powder, baking powder and baking soda. ;...In a large bowl, beat butter, eggs and vanilla.;Gradually add sugar.;Beat on medium to high speed for about 3-4 minutes until well mixed.",
             rating: 2,
             titleText: 'TITLE',
-            source: 'https://www.sprinklesandsprouts.com/wp-content/uploads/2016/09/toffee-apple-martini-cocktail.jpg'
+            source: 'https://www.sprinklesandsprouts.com/wp-content/uploads/2016/09/toffee-apple-martini-cocktail.jpg',
+            author: 'Bill101',
         },
         {
             id: 4,
@@ -45,20 +48,22 @@ export const recipeManager = ( () => {
             instructions: "Pre-heat oven to 350 degrees.;Grease and flour three 6' X 1 1/2' round cake pans.;Mix together flour, cocoa powder, baking powder and baking soda. ;...In a large bowl, beat butter, eggs and vanilla.;Gradually add sugar.;Beat on medium to high speed for about 3-4 minutes until well mixed.",
             rating: 5,
             titleText: 'TITLE',
-            source: 'https://www.sprinklesandsprouts.com/wp-content/uploads/2016/09/toffee-apple-martini-cocktail.jpg'
+            source: 'https://www.sprinklesandsprouts.com/wp-content/uploads/2016/09/toffee-apple-martini-cocktail.jpg',
+            author: 'Bill101',
         },
     ]
-    let favorites = (async () => {
-        try {
-        const value = await AsyncStorage.getItem('TASKS');
-        if (value !== null) {
-          // We have data!!
-          return JSON.parse(value)
-        }
-      } catch (error) {
-        // Error retrieving data
-      }
-    })()
+     let favorites = []
+     //(async () => {
+    //     try {
+    //     const value = await AsyncStorage.getItem('Favorites');
+    //     if (value !== null) {
+    //       // We have data!!
+    //       return JSON.parse(value)
+    //     }
+    //   } catch (error) {
+    //     // Error retrieving data
+    //   }
+    // })()
     
     return ({
         getData: () => recipeData,
@@ -72,12 +77,14 @@ export const recipeManager = ( () => {
             recipeData.push(item)
             cb(recipeData)
         },
+        search: key => {
+            return favorites.filter( item => item.title === key)
+        },
         addToFavorites: (item) => {
             let found = favorites.findIndex( (myItem) => item.id == myItem.id)
             if(found !==-1)
                 return
             favorites.push(item)
-            console.log(favorites.length)
             },
         removeFavorite: (itemId, cb) => { 
             favorites = favorites.filter( item => item.id !== itemId)

@@ -16,7 +16,7 @@ import { Constants, Location, Permissions, Linking,  } from 'expo';
 import Colors from '../constants/Colors'
 import MapView, {Marker, PROVIDER_GOOGLE } from 'react-native-maps'
 import Svg, { Rect, Defs, Path, Use } from "react-native-svg"
-
+import Qs from 'qs'
 
 export default class MapScreen extends React.Component {
 static navigationOptions = ({ navigation }) => ({
@@ -34,11 +34,12 @@ static navigationOptions = ({ navigation }) => ({
   
   constructor(props){
     super(props)
-    let bgImage = ''
     this.state = {
       loaded: false, 
       location: null,
       errorMessage: null,
+      bars: [],
+      barMarkers: null
     }
   }
   
@@ -52,6 +53,11 @@ static navigationOptions = ({ navigation }) => ({
       this._getLocationAsync();
     }
   }
+  
+  componentDidMount() {
+     
+   
+  }
 
   _getLocationAsync = async () => {
     let { status } = await Permissions.askAsync(Permissions.LOCATION);
@@ -62,7 +68,30 @@ static navigationOptions = ({ navigation }) => ({
     }
 
     let location = await Location.getCurrentPositionAsync({});
-    this.setState({ location });
+    let url = `https://maps.googleapis.com/maps/api/place/nearbysearch/json?` + Qs.stringify({
+      key: 'AIzaSyDJO00jf6bw0M-qc6vrVRXeaG_ZKCGDkkw',
+      location: `${location.coords.latitude},${location.coords.longitude}`,
+      rankby: 'distance',
+      type: 'bar',
+      opennow: true
+    })
+    let request =  fetch(url).then(response => response.json()).then(data => { 
+      this.setState({ location }) 
+      let barMarkers = data.results.map( (bar, index) => <Marker key={index.toString()} onPress={(event) => {
+                        const scheme = Platform.select({ ios: 'maps:0,0?q=', android: 'geo:0,0?q=' });
+                        const latLng = `${bar.geometry.location.lat},${bar.geometry.location.lng}`;
+                        const label = bar.name
+                        const url = `https://m.uber.com/ul/?client_id=oY3mhYVkG0lsHk3JpPypb4z3QH0eg-XP&action=setPickup&pickup[latitude]=${this.state.location.coords.latitude}&pickup[longitude]=${this.state.location.coords.longitude}&dropoff[latitude]=${bar.geometry.location.lat}&dropoff[longitude]=${bar.geometry.location.lng}`
+                        Linking.openURL(url); 
+                      } }
+                      coordinate={{latitude: bar.geometry.location.lat, longitude: bar.geometry.location.lng}} title={bar.name} 
+                      icon={bar.icon} 
+                      />) 
+      this.setState({barMarkers})
+
+    }) .catch(err => console.log(err))
+    
+      
   };
   
   render() {
@@ -82,38 +111,11 @@ static navigationOptions = ({ navigation }) => ({
         {this.state.location &&
                 <MapView style={{height: height , width: width, backgroundColor: '#36516E' }} 
                     region={{...this.state.location.coords, 
-                            latitudeDelta: 0.01922,
-                            longitudeDelta: 0.016866,
+                            latitudeDelta: 0.0922,
+                            longitudeDelta: 0.06866,
                     }   } 
-                    onPress={(event) => {
-                        const scheme = Platform.select({ ios: 'maps:0,0?q=', android: 'geo:0,0?q=' });
-                        const latLng = `${this.state.location.coords.latitude},${this.state.location.coords.longitude}`;
-                        const label = 'Label'
-                        const url = Platform.select({
-                          ios: `${scheme}${label}@${latLng}`,
-                          android: `${scheme}${latLng}(${label})`
-                        });
-                        Linking.openURL(url); 
-                      } }
                       scrollEnabled={false}>
-            <Marker coordinate={this.state.location.coords} centerOffset={{ y: -1*viewWrapperHeight, x: -10 }}>
-              <View style={{width: viewWrapperWidth, height: viewWrapperHeight, backgroundColor:'#fff', }}>
-                <View style={{width: svgViewWidth, height: svgViewHeight, position: 'absolute', top: viewWrapperHeight, left: (viewWrapperWidth - (svgViewWidth/2)) /2 }}>
-                     <Svg
-                      width={svgWidth}
-                      height={svgHeight}
-                    >
-                    <Defs>
-                      <Path
-                        d="M 0 0 L 40 0 L 20 50 z"
-                        id="a"
-                      />
-                    </Defs>
-                    <Use href="#a" opacity={1} fill="#fff" fillOpacity={1} />
-                  </Svg>
-                </View>
-              </View>
-            </Marker>
+                      {this.state.barMarkers}
              
         </MapView> 
         

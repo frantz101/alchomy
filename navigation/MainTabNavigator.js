@@ -9,11 +9,15 @@ import SignupScreen from '../screens/SignUp'
 import DashboardScreen from '../screens/Dashboard'
 import SearchScreen from '../screens/Search'
 import FavoritesScreen from '../screens/Favorites'
+import FavoriteBarScreen from '../screens/FavoriteBar'
 import SettingsScreen from '../screens/Setting'
 import UploadScreen from '../screens/Upload'
 import MapviewScreen from '../screens/MapView'
 import RecipeScreen from '../screens/Recipe'
 import { AntDesign } from "@expo/vector-icons";
+
+
+console.log(FavoriteBarScreen)
 
 export const HomeStack = createStackNavigator({
   Welcome: WelcomeScreen,
@@ -62,8 +66,24 @@ FavoritesStack.navigationOptions = {
   ),
 };
 
+export const FavoriteBarStack = createStackNavigator({
+    FavoriteBars: FavoriteBarScreen
+})
+
+FavoriteBarStack.navigationOptions = {
+  tabBarLabel: 'Favorites',
+   tabBarIcon: ({ focused }) => (
+    <AntDesign
+      focused={focused}
+      name='hearto'
+      size={20}
+      color={focused ? Colors.primary : 'black'}
+    />
+  ),
+};
+
 export const SettingsStack = createStackNavigator({
-    Favorites: SettingsScreen
+  Setting: SettingsScreen
 })
 
 SettingsStack.navigationOptions = {

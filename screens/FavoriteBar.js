@@ -16,9 +16,10 @@ import {
 import { Svg, } from 'expo';
 import Colors from '../constants/Colors'
 import Result from '../components/Post'
-import {recipeManager} from '../recipeData'
+import {UserManager} from '../userData'
+import { List, ListItem } from 'react-native-elements'
 
-export default class FavoritesScreen extends React.Component {
+export default class FavoriteBarScreen extends React.Component {
  static navigationOptions = ({ navigation }) => ({
     headerStyle: {
       borderBottomWidth: 0,
@@ -36,7 +37,7 @@ export default class FavoritesScreen extends React.Component {
     super(props)
     let bgImage = ''
     const didBlurSubscription=''
-    let favorites = recipeManager.getFavorites()
+    let favorites = UserManager.getFavoriteBars()
     this._renderItem = this._renderItem.bind(this)
     this._keyExtractor = this._keyExtractor.bind(this)
     this.state = {
@@ -45,25 +46,20 @@ export default class FavoritesScreen extends React.Component {
     }
   }
   
-  _keyExtractor = (item, index) => item.id.toString()
+  _keyExtractor = (item, index) => item
   
    _renderItem = ({item}) => {
-    return <Result
-    id={item.id}
-      navigate={this.props.navigation.navigate.bind(this)}
-      instructions={item.instructions}
-      ingredients={item.ingredients}
-      rating={item.rating}
-      manager={recipeManager}
-      source={item.source}
-      item={item} 
+    return <ListItem
+    id={item}
+      title={item}
+      bottomDivider
       />
    }
   
   componentDidMount() {
      this.props.navigation.addListener('didFocus', () => {
       this.setState({
-        favoritesArr: recipeManager.getFavorites()
+        favoritesArr: UserManager.getFavoriteBars()
       })
     }) 
   }
@@ -97,12 +93,12 @@ export default class FavoritesScreen extends React.Component {
                 />
               </View>
               <View>
-                 <FlatList
-                  data={listData}
-                  extraData={this.state}
-                  renderItem={this._renderItem}
-                  keyExtractor={this._keyExtractor}
-                />
+                     <FlatList
+                      data={listData}
+                      extraData={this.state}
+                      renderItem={this._renderItem}
+                      keyExtractor={this._keyExtractor}
+                    />
               </View>
             </View>
       </ScrollView>

@@ -18,7 +18,7 @@ import {
 import Colors from '../constants/Colors'
 import Svg, { Defs, LinearGradient, Stop, Path, G } from 'react-native-svg'
 import {UserManager} from '../userData'
-
+import recipeManager from '../recipeData'
 export default class WelcomeScreen extends React.Component {
   static navigationOptions = {
     header: null,
@@ -43,23 +43,21 @@ export default class WelcomeScreen extends React.Component {
       password: this.state.password
       
     }
-    console.log(UserManager)
    let found =  UserManager.findUser(user)
-     console.log(found)
     if(found === undefined || user.password != found.password) {
       this.setState({ errorMessage : 'not found' })
     }
     else {
-        this.navigatetoDashboard()
+        this.navigatetoDashboard(user)
     }
   }
   
-  navigatetoDashboard( ) {
+  navigatetoDashboard(user) {
     this.setState({
       showIndicator: true
     })
     setTimeout(() => {
-          this.props.navigation.navigate('Search')
+          this.props.navigation.navigate('Search', {user: user})
     }, 2000)
   }
   

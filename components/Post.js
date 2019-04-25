@@ -57,7 +57,7 @@ export default class PostScreen extends React.Component {
                   <TouchableHighlight underlayColor={'#17B610'} onPress={ () => manager.addToFavorites(item) } 
                     style={{ width: 40, height: 40, position: 'absolute', left: 350}}>
                       <Ionicons 
-                        name={this.props.filled === 'filled' ? 'md-heart' : 'mad-heart-empty' }
+                        name={this.props.filled === 'filled' ? 'md-heart-empty' : 'md-heart' }
                         size={26}
                       />
                    </TouchableHighlight>

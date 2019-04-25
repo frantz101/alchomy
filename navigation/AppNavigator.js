@@ -1,10 +1,10 @@
 import React from 'react';
 import { createAppContainer, createSwitchNavigator, createBottomTabNavigator } from 'react-navigation';
-import MainTabNavigator, {HomeStack, FavoritesStack, SettingsStack, MapViewStack} from './MainTabNavigator';
+import MainTabNavigator, {HomeStack, FavoriteBarStack, SettingsStack, MapViewStack} from './MainTabNavigator';
 
 const mapBottomNavigator = createBottomTabNavigator({
   MapViewStack,
-  FavoritesStack,
+  FavoriteBarStack,
   SettingsStack,
 }, {
   tabBarOptions: {

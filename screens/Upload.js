@@ -15,7 +15,7 @@ import {
 } from 'react-native';
 import Colors from '../constants/Colors'
 import Svg, { Defs, LinearGradient, Stop, Path, G } from 'react-native-svg'
-
+import {recipeManager} from '../recipeData'
 
 export default class SearchScreen extends React.Component {
   static navigationOptions = {
@@ -63,27 +63,43 @@ export default class SearchScreen extends React.Component {
             <TextInput
                  style={{height: 40, borderColor: 'gray', borderBottomWidth: 1, marginBottom: 10}}
                  placeholder='Title'
+                 onChangeText={title => this.setState({title})}
             />
             <TextInput
               style={{height: 40, borderColor: 'gray', borderBottomWidth: 1, marginBottom: 10}}
               placeholder='Drink Type'
+              onChangeText={type => this.setState({type})}
             />
             <TextInput
               style={{height: 40, borderColor: 'gray', borderBottomWidth: 1, marginBottom: 10}}
               textContentType='password'
               placeholder='ingredient1,ingredient2,ingredient3'
+              onChangeText={ingredients => this.setState({ingredients})}
             />
             <TextInput
               style={{height: 40, borderColor: 'gray', borderBottomWidth: 1, marginBottom: 10}}
               secureTextEntry={true} 
               textContentType='password'
               placeholder='instruction1;instruction2;instruction3'
+              onChangeText={instructions => this.setState({instructions})}
             />
             <View style={styles.loginButtonWrapper}>
               <Button
                 title='Upload'
                 color='black' 
-                onPress={() => {}}
+                onPress={async () => {
+                  const user = await this.props.navigation.getParam('user', 'lol')
+                  const data = {
+                    id: recipeManager.getData().length,
+                    ingredients: this.state.ingredients,
+                    instructions: this.state.instructions,
+                    rating: 3,
+                    titleText: this.state.title,
+                    source: 'https://www.sprinklesandsprouts.com/wp-content/uploads/2016/09/toffee-apple-martini-cocktail.jpg',
+                    author: user.name
+                  }
+                  recipeManager.addItem(data, data => console.log(data))
+                }}
               />
             </View>
         </View>

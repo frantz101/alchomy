@@ -16,7 +16,7 @@ import {
 } from 'react-native';
 import Colors from '../constants/Colors'
 import Svg, { Defs, LinearGradient, Stop, Path, G } from 'react-native-svg'
-
+import {UserManager} from '../userData'
 
 export default class WelcomeScreen extends React.Component {
   static navigationOptions = {
@@ -27,15 +27,19 @@ export default class WelcomeScreen extends React.Component {
     super(props)
     let bgImage = ''
     this.state = {
-      loaded: false
+      loaded: false,
+      name: '',
+      email: '',
+      password: '',
+      confirmPassword: ''
     }
   }
   
-  navigatetoDashboard ( e ) {
-    this.props.navigation.navigate('Search')
+  navigateToDashboard ( user  ) {
+    this.props.navigation.navigate('Search', user)
   } 
   
-  navigateToSignup(e){
+  navigateToLogin(e){
     this.props.navigation.navigate('Login')
   }
  
@@ -74,33 +78,49 @@ export default class WelcomeScreen extends React.Component {
                  style={{height: 40, borderColor: 'gray', borderBottomWidth: 1, marginBottom: 10}}
                  placeholder='Name'
                  textContentType='name'
+                 onChangeText={ name => this.setState({name})}
             />
             <TextInput
               style={{height: 40, borderColor: 'gray', borderBottomWidth: 1, marginBottom: 10}}
               placeholder='Email'
               textContentType='emailAddress'
+              onChangeText={ email => this.setState({email})}
             />
             <TextInput
               style={{height: 40, borderColor: 'gray', borderBottomWidth: 1, marginBottom: 10}}
               secureTextEntry={true} 
               textContentType='password'
               placeholder='Password'
+              onChangeText={ password => this.setState({password})}
             />
             <TextInput
               style={{height: 40, borderColor: 'gray', borderBottomWidth: 1, marginBottom: 10}}
               secureTextEntry={true} 
               textContentType='password'
               placeholder='Confirm Password'
+              onChangeText={ confirmPassword => this.setState({confirmPassword})}
             />
             <View style={styles.loginButtonWrapper}>
               <Button
                 title='Sign Up'
                 color='black' 
-                onPress={ this.navigatetoDashboard.bind(this) }
+                onPress={ () => {
+                console.log(this.state.email)
+                  if(!UserManager.findUser({email: this.state.email}) && this.state.password === this.state.confirmPassword) {
+                    let user = {
+                      name: this.state.name,
+                      email: this.state.email,
+                      password: this.state.password,
+                    }
+                    UserManager.addUser(user, (data) => console.log(data) )
+                   this. navigateToDashboard(user)
+                  }
+                }}
+                onChangetext={ confirmPassword => this.setState({confirmPassword})}
               />
             </View>
             <View style={styles.signUpWrapper}>
-              <Text style={styles.SignUpText}>Already registered? <Text style={{color: Colors.secondary }} onPress={this.navigateToSignup.bind(this) }>Login</Text> </Text>
+              <Text style={styles.SignUpText}>Already registered? <Text style={{color: Colors.secondary }} onPress={this.navigateToLogin.bind(this) }>Login</Text> </Text>
             </View>
           </View>
         </View>
